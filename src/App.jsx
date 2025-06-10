@@ -25,8 +25,8 @@ function App() {
   const [messageType, setMessageType] = useState("success");
 
   const containerRef = useRef(null);
-  
-  //Funcion para mostra mensajes temporales
+
+   //Funcion para mostra mensajes temporales
   const showMessage = (text, type = "success") => {
     setMessage(text);
     setMessageType(type);
@@ -51,6 +51,8 @@ function App() {
     p.title.toLowerCase().includes(search.toLowerCase())
   );
 
+  const noProductsAvailable = filteredProducts.length === 0;
+
   const totalProducts = filteredProducts.length;
   const maxProduct = Math.max(...filteredProducts.map((p) => p.price));
   const minProduct = Math.min(...filteredProducts.map((p) => p.price));
@@ -63,12 +65,10 @@ function App() {
         filteredProducts.length
       : 0;
 
-  /*const [show, setShow] = useState(true);*/
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     containerRef.current.classList.toggle("dark-mode");
-    //currentRef.current.classList.toggle("dark-mode"));
   };
 
   const handleExport = () => {
@@ -79,7 +79,9 @@ function App() {
   
     let blob;
     let filename;
-  
+    
+    {/* dependiendo de la selección ingresa por distintas opciones*/}
+
     if (format === "json") {
       blob = new Blob([JSON.stringify(filteredProducts, null, 2)], {
         type: "application/json",
@@ -137,8 +139,9 @@ function App() {
   return (
     <div ref={containerRef}>
 
+      {/*llamada a componente Header*/}
       <Header/>
-    
+
       {message && (
         <div
           className={`p-2 text-center mb-4 rounded ${
@@ -149,22 +152,24 @@ function App() {
         </div>
         )}
 
-    
+      {/*llamada a componente ThemeToggle*/}
       <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      
+
+      {/*llamada a componente SearchBar*/}
       <SearchBar search={search} setSearch={setSearch} />
-      
+
+      {/*llamada a componente SearchBar*/}
       <ExportControls
           format={format}
           setFormat={setFormat}
           handleExport={handleExport}
+          noProductsAvailable={noProductsAvailable}
         />
-      
-     
 
       {/*Usamos componente nuevo*/}
       <ProductList products={filteredProducts} />
       
+      {/*Usamos componente PaginationControls*/}
       <PaginationControls
         page={page}
         setPage={setPage}
@@ -173,8 +178,8 @@ function App() {
         show={show}
         setShow={setShow}
       />
-
-    
+      
+      {/*Usamos componente StatsPanel le pasamsamos parametros*/}
       {show && (
         <StatsPanel
           Total={totalProducts}
