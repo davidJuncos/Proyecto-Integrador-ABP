@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import StatsPanel from "./components/StatsPanel";
 import ProductList from "./components/ProductList";
+import * as XLSX from "xlsx"; // Asegurate de importar esto arriba en tu archivo
 
 function App() {
   //Estados
@@ -77,6 +78,20 @@ function App() {
       const csvContent = csvHeader + csvRows;
       blob = new Blob([csvContent], { type: "text/csv" });
       filename = "productos.csv";
+    } else if (format === "Excel") {
+      const worksheet = XLSX.utils.json_to_sheet(filteredProducts);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Productos");
+  
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+      blob = new Blob([excelBuffer], {
+        type:
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      filename = "productos.xlsx";
     } else {
       alert("Formato no soportado");
       return;
@@ -125,7 +140,7 @@ function App() {
             <option value="">Seleccionas formáto</option>
             <option value="json">JSON</option>
             <option value="csv">CSV</option>
-            <option value="excel">Excel</option>
+            <option value="Excel">Excel</option>
       </select>
 
       <button onClick={handleExport}
