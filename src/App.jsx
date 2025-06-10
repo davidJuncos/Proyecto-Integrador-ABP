@@ -9,6 +9,7 @@ function App() {
   const [products, setProducta] = useState([]);
   const [search, setSearch] = useState("");
   const [show, setShow] = useState(true);
+  
   //Ref
   const containerRef = useRef(null);
   useEffect(() => {
@@ -49,6 +50,7 @@ function App() {
       <h1 className="text-3xl text-blue-600 font-bold text-center my-4">
         Catálogo de Productos
       </h1>
+     
 
       <button
         onClick={toggleDarkMode}
@@ -69,6 +71,7 @@ function App() {
       <ProductList products={filteredProducts} />
 
       {/*className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"*/}
+
       <button
         onClick={() => setShow(!show)}
         className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded mb-4"

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 📦 Catálogo de Productos
 
 Este proyecto muestra un catálogo de productos con una interfaz visual moderna y estadísticas clave del inventario.
@@ -61,3 +62,6 @@ Este componente muestra la lista de productos en forma de tarjetas. Cada tarjeta
 ```
 
 Cada producto se representa como una tarjeta individual con su miniatura, título, descripción corta, precio y calificación visual.
+=======
+# Proyecto-Integrador-ABP
+>>>>>>> 1c610863219012e7b79b1a9a76f80093de030238
