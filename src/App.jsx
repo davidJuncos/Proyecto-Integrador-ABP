@@ -4,6 +4,12 @@ import { useEffect, useState, useRef } from "react";
 import StatsPanel from "./components/StatsPanel";
 import ProductList from "./components/ProductList";
 import * as XLSX from "xlsx"; // Asegurate de importar esto arriba en tu archivo
+import Header from "./components/Header";
+import ThemeToggle from "./components/ThemeToggle";
+import SearchBar from "./components/SearchBar";
+import ExportControls from "./components/ExportControls";
+import PaginationControls from "./components/PaginationControls";
+
 
 function App() {
   //Estados
@@ -12,14 +18,12 @@ function App() {
   const [show, setShow] = useState(true);
   const [page, setPage] = useState(1);
   const [format, setFormat] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
+  
 
   //Ref
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState("success");
 
-  const obsRef = useRef();
   const containerRef = useRef(null);
   
   //Funcion para mostra mensajes temporales
@@ -131,10 +135,9 @@ function App() {
 
   return (
     <div ref={containerRef}>
-      <h1 className="text-3xl text-blue-600 font-bold text-center my-4">
-        Catálogo de Productos
-      </h1>
-      
+
+      <Header/>
+    
       {message && (
         <div
           className={`p-2 text-center mb-4 rounded ${
@@ -145,127 +148,32 @@ function App() {
         </div>
         )}
 
-
-      <button
-        onClick={toggleDarkMode}
-        className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded mb-4"
-      >
-        Modo {darkMode ? "Claro" : "Oscuro"}
-      </button>
+    
+      <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+      
+      <SearchBar search={search} setSearch={setSearch} />
+      
+      <ExportControls
+          format={format}
+          setFormat={setFormat}
+          handleExport={handleExport}
+        />
+      
      
-      <input
-        type="text"
-        placeholder="Buscar Producto"
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-        }}
-        className="border border-gray-300 rounded p-2 w-full max-w-md mx-auto block mb-6"
-      />
-      
-      {/* //seleccion de fomartos de descarga
-      <select onChange={(e) => setFormat(e.target.value)} value={format}>
-            <option value="">Seleccionas formáto</option>
-            <option value="json">JSON</option>
-            <option value="csv">CSV</option>
-            <option value="Excel">Excel</option>
-      </select>*/}
-      {/*
-      <p className="mb-1">Selección de formatos de descarga</p>
-      
-      <div className="flex gap-4 mb-4">
-        <select
-          onChange={(e) => setFormat(e.target.value)}
-          value={format}
-          className="border border-gray-300 rounded p-2"
-        >
-          <option value="">Seleccionas formato</option>
-          <option value="json">JSON</option>
-          <option value="csv">CSV</option>
-          <option value="Excel">Excel</option>
-        </select>
-
-        <button
-          onClick={handleExport}
-          className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded"
-        >
-          Exportar archivo
-        </button>
-      </div>
-      */}
-
-      {/* Contenedor principal que centra vertical y horizontalmente el texto y los controles */}
-      <div className="flex flex-col items-center mb-4">
-        
-        {/* Texto informativo centrado que indica la función del selector */}
-        <p className="mb-1 text-center">Selección de formatos de descarga</p>
-        
-        {/* Contenedor horizontal para el selector y el botón con separación entre ellos */}
-        <div className="flex gap-4">
-          
-          {/* Selector para elegir el formato de exportación */}
-          <select
-            onChange={(e) => setFormat(e.target.value)}
-            value={format}
-            className="border border-gray-300 rounded p-2"
-          >
-            <option value="">Seleccionas formato</option>
-            <option value="json">JSON</option>
-            <option value="csv">CSV</option>
-            <option value="Excel">Excel</option>
-          </select>
-
-          {/* Botón para disparar la función de exportación */}
-          <button
-            onClick={handleExport}
-            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded"
-          >
-            Exportar archivo
-          </button>
-          
-        </div>
-      </div>
-
 
       {/*Usamos componente nuevo*/}
       <ProductList products={filteredProducts} />
-      {/* Contenedor con borde negro para los botones y el texto de la página */}
-      <div className="flex flex-col items-center gap-4 p-4 mb-4 rounded-xl shadow-lg bg-white border border-black">
+      
+      <PaginationControls
+        page={page}
+        setPage={setPage}
+        filteredProducts={filteredProducts}
+        limit={limit}
+        show={show}
+        setShow={setShow}
+      />
 
-  
-        {/* Texto informativo sobre la página actual */}
-        <small className="text-black ">Estamos en la página {page}</small>
-
-        {/* Contenedor horizontal para los botones con separación y centrado */}
-        <div className="flex flex-wrap justify-center gap-4">
-          
-          {/* Botón para ir a la página anterior. Se desactiva si ya estamos en la primera página */}
-          <button
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-            className="w-32 bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded shadow"
-          >
-            Anterior
-          </button>
-
-          {/* Botón para ir a la página siguiente. Se desactiva si no hay más productos */}
-          <button
-            disabled={filteredProducts.length < limit}
-            onClick={() => setPage(page + 1)}
-            className="w-32 bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded shadow"
-          >
-            Siguiente
-          </button>
-
-          {/* Botón para mostrar/ocultar estadísticas del panel */}
-          <button
-            onClick={() => setShow(!show)}
-            className="w-32 bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded shadow"
-          >
-            {show ? "Ocultar" : "Mostrar"}
-          </button>
-        </div>
-      </div>
+    
       {show && (
         <StatsPanel
           Total={totalProducts}
