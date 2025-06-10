@@ -43,6 +43,7 @@ function App() {
   }, [page]);
   const [darkMode, setDarkMode] = useState(false);
 
+
   {
     /*Filtarmos productos */
   }
